@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-dark-surface: var(--brand-dark-surface);
+  --color-brand-dark-border: var(--brand-dark-border);
+  --color-brand-light: var(--brand-light);
+  --color-brand-light-surface: var(--brand-light-surface);
+  --color-brand-muted: var(--brand-muted);
+}
+
+:root {
+  /* Identidade Visual Provisória — Manifesto da Sul */
+  --brand-primary: #c85a32;         /* Terracota viva / argila da várzea */
+  --brand-primary-hover: #ab4823;   /* Terracota escura para hover */
+  --brand-secondary: #e59500;       /* Ouro periférico / luz solar */
+  --brand-accent: #2d6a4f;          /* Verde resistência / folha */
+  --brand-dark: #171514;            /* Grafite urbano profundo */
+  --brand-dark-surface: #221f1d;    /* Superfície escura com toque quente */
+  --brand-dark-border: #36322e;     /* Borda com contraste suave */
+  --brand-light: #fcfaf7;           /* Papel cru / off-white natural */
+  --brand-light-surface: #f4ede2;   /* Bege sutil para blocos e cards */
+  --brand-muted: #78716c;           /* Texto secundário (contraste AA) */
+
+  --background: var(--brand-light);
+  --foreground: var(--brand-dark);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Foco acessível */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--brand-secondary);
+  outline-offset: 2px;
+}
