@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getEventBySlug, formatEventDate } from '@/lib/events'
+import { Button } from '@/components/ui/Button'
 
 export const dynamic = 'force-dynamic'
 
@@ -44,90 +45,42 @@ export default async function EventoDetailPage({ params }: PageProps) {
   const { dataLegivel, horaLegivel } = formatEventDate(evento.data)
 
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
-      {/* Navegação de retorno */}
-      <div className="mb-6">
-        <Link
-          href="/agenda"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--brand-primary)] hover:underline"
-        >
-          ← Voltar para a Agenda
-        </Link>
-      </div>
+    <div className="mx-auto w-full max-w-5xl flex-1 px-5 py-10 sm:px-10 sm:py-16">
+      <Link href="/agenda" className="text-link">← Voltar para a agenda</Link>
 
-      <article className="bg-white border border-stone-200 rounded-3xl overflow-hidden shadow-sm">
-        {/* Capa */}
+      <article className="mt-7">
         {evento.capa_url && (
-          <div className="w-full h-64 sm:h-80 md:h-96 overflow-hidden bg-stone-900 relative">
+          <div className="mb-8 max-h-[32rem] overflow-hidden border-y border-[var(--brand-ink)] bg-[var(--brand-paper-2)]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={evento.capa_url}
-              alt={evento.titulo}
-              className="w-full h-full object-cover"
-            />
+            <img src={evento.capa_url} alt={evento.titulo} className="max-h-[32rem] w-full object-cover" />
           </div>
         )}
-
-        <div className="p-6 sm:p-10 space-y-8">
-          {/* Cabeçalho */}
-          <div className="space-y-4">
-            <span className="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-[var(--brand-secondary)]/15 text-amber-900">
-              Sarau & Encontro Cultural
-            </span>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--brand-dark)]">
-              {evento.titulo}
-            </h1>
-
-            {/* Painel de Data e Local */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-[var(--brand-light-surface)] border border-stone-200 text-sm">
-              <div className="flex items-start gap-3">
-                <span className="text-xl">📅</span>
-                <div>
-                  <p className="font-bold text-stone-900 capitalize">{dataLegivel}</p>
-                  <p className="text-stone-600 text-xs">Horário: {horaLegivel} (horário de Brasília)</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-xl">📍</span>
-                <div>
-                  <p className="font-bold text-stone-900">{evento.local}</p>
-                  {evento.maps_url && (
-                    <a
-                      href={evento.maps_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-[var(--brand-primary)] font-semibold underline hover:text-[var(--brand-primary-hover)] inline-flex items-center gap-1 mt-0.5"
-                    >
-                      Abrir no Google Maps ↗
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Descrição Completa */}
-          <div className="prose prose-stone max-w-none text-stone-800 text-base leading-relaxed whitespace-pre-line border-t border-stone-100 pt-6">
-            {evento.descricao}
-          </div>
-
-          {/* CTA para o Sarau */}
-          <div className="p-6 rounded-2xl bg-[var(--brand-dark)] text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+        <header className="max-w-4xl border-b border-[var(--brand-ink)] pb-7">
+          <p className="section-kicker">Agenda <span aria-hidden="true">/</span> Encontro</p>
+          <h1 className="mt-4 font-title text-[clamp(2.5rem,7vw,5.5rem)] leading-[.98] text-[var(--brand-ink)]">
+            {evento.titulo}
+          </h1>
+          <dl className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-              <h2 className="text-lg font-bold text-[var(--brand-secondary)]">
-                Quer recitar, tocar ou apoiar na organização?
-              </h2>
-              <p className="text-xs text-stone-300">
-                O microfone é aberto e a construção é de todo mundo.
-              </p>
+              <dt className="font-condensed text-sm font-semibold uppercase tracking-[1px] text-[var(--brand-concrete)]">Data e hora</dt>
+              <dd className="mt-1 font-sans text-base leading-relaxed">{dataLegivel} · {horaLegivel}</dd>
             </div>
-            <Link
-              href="/faca-parte"
-              className="px-5 py-2.5 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white font-bold text-xs uppercase tracking-wider transition-colors whitespace-nowrap shadow-md"
-            >
-              Quero Participar
-            </Link>
-          </div>
+            <div>
+              <dt className="font-condensed text-sm font-semibold uppercase tracking-[1px] text-[var(--brand-concrete)]">Local</dt>
+              <dd className="mt-1 font-sans text-base leading-relaxed">{evento.local}</dd>
+              {evento.maps_url && (
+                <a href={evento.maps_url} target="_blank" rel="noopener noreferrer" className="text-link mt-2">Abrir no mapa ↗</a>
+              )}
+            </div>
+          </dl>
+        </header>
+
+        <div className="max-w-3xl whitespace-pre-line py-7 font-sans text-base leading-[1.75] text-[var(--brand-ink)] sm:text-lg">
+          {evento.descricao}
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[var(--brand-ink)] py-6">
+          <p className="font-sans text-base">Quer participar ou conhecer o coletivo?</p>
+          <Button variant="primary" size="md" href="/faca-parte">Faça parte</Button>
         </div>
       </article>
     </div>

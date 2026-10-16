@@ -2,36 +2,32 @@ import type { Metadata } from 'next'
 import { FacaParteForm } from './FacaParteForm'
 
 export const metadata: Metadata = {
-  title: 'Faça Parte | Manifesto da Sul',
+  title: 'Faça parte | Manifesto da Sul',
   description:
-    'Cadastre seu interesse em participar do coletivo Manifesto da Sul. Venha somar na construção cultural da Zona Sul.',
+    'Conheça o coletivo Manifesto da Sul e manifeste seu interesse em participar das atividades.',
 }
 
 export default function FacaPartePage() {
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto">
-      {/* Cabeçalho */}
-      <div className="text-center space-y-3 mb-8">
-        <span className="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-[var(--brand-secondary)]/15 text-amber-900">
-          Chamada Aberta
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--brand-dark)]">
-          Faça Parte do Coletivo
-        </h1>
-        <p className="text-sm sm:text-base text-stone-600 max-w-lg mx-auto">
-          O Manifesto da Sul se constrói com quem vive e cria na quebrada.
-          Preencha o formulário abaixo para receber informações dos nossos encontros e somar com a gente.
+    <div className="w-full flex-1 bg-[var(--brand-paper)]">
+      <header className="border-b border-[var(--brand-ink)] px-5 py-10 sm:px-10 sm:py-14 lg:px-[12vw]">
+        <p className="section-kicker">Manifesto da Sul <span aria-hidden="true">/</span> Participação</p>
+        <h1 className="mt-4 font-title text-[clamp(2.8rem,7vw,5.5rem)] leading-none">Faça parte</h1>
+        <p className="mt-4 max-w-2xl font-sans text-base leading-relaxed sm:text-lg">
+          O coletivo se constrói com quem vive e cria na quebrada. Conte um pouco sobre você e como gostaria de participar.
         </p>
-      </div>
+      </header>
 
-      {/* Formulário Interativo */}
-      <FacaParteForm />
-
-      {/* Observação de acolhimento */}
-      <div className="mt-8 text-center text-xs text-stone-500 space-y-1">
-        <p>Não há mensalidades, cobranças ou processos seletivos formais.</p>
-        <p>A cultura popular é direito e construção coletiva.</p>
-      </div>
+      <section className="grid gap-8 px-5 py-10 sm:px-10 sm:py-14 lg:grid-cols-[minmax(0,2fr)_minmax(14rem,.8fr)] lg:gap-14 lg:px-[12vw]">
+        <FacaParteForm />
+        <aside className="max-w-sm border-t-3 border-[var(--brand-red)] pt-4">
+          <p className="section-kicker">Sem pressa, sem pressão</p>
+          <h2 className="mt-3 font-title text-2xl leading-tight sm:text-3xl">Você escolhe como somar.</h2>
+          <p className="mt-4 font-sans text-base leading-relaxed">
+            O cadastro não cria compromisso. Você pode pedir para consultar ou apagar seus dados conforme a política de privacidade.
+          </p>
+        </aside>
+      </section>
     </div>
   )
 }

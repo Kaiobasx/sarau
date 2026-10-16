@@ -1,159 +1,127 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+const navItems = [
+  { label: 'Início', href: '/' },
+  { label: 'Agenda', href: '/agenda' },
+  { label: 'História', href: '/#de-onde-viemos' },
+  { label: 'Privacidade', href: '/privacidade' },
+]
 
 export function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuToggleRef = useRef<HTMLButtonElement>(null)
+  const menuCloseRef = useRef<HTMLButtonElement>(null)
+  const mobileNavigationRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    menuCloseRef.current?.focus()
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setMenuOpen(false)
+        menuToggleRef.current?.focus()
+        return
+      }
+
+      if (event.key !== 'Tab') return
+      const focusable = mobileNavigationRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not(:disabled)',
+      )
+      if (!focusable?.length) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    window.addEventListener('keydown', closeOnEscape)
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape)
+      document.body.style.overflow = previousOverflow
+    }
+  }, [menuOpen])
+
+  const closeMenu = () => {
+    setMenuOpen(false)
+    menuToggleRef.current?.focus()
+  }
 
   return (
-    <header className="sticky top-0 z-50 bg-[var(--brand-dark)] text-[var(--brand-light)] border-b border-[var(--brand-dark-border)] shadow-md">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Logo / Nome */}
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-lg sm:text-xl font-bold tracking-tight text-[var(--brand-light)] hover:text-[var(--brand-secondary)] transition-colors focus-visible:ring-2 focus-visible:ring-[var(--brand-secondary)]"
-          aria-label="Manifesto da Sul - Página Inicial"
-        >
-          <span className="inline-block w-3 h-3 rounded-full bg-[var(--brand-primary)]"></span>
-          <span>Manifesto da Sul</span>
+    <header className="site-header">
+      <div className="edition-line">
+        <span>Manifesto da Sul</span>
+        <span>Zona Sul · São Paulo</span>
+      </div>
+      <div className="header-main">
+        <Link href="/" aria-label="Manifesto da Sul — início" className="header-brand">
+          Manifesto da Sul
         </Link>
-
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium" aria-label="Navegação principal">
-          <Link
-            href="/"
-            className="hover:text-[var(--brand-secondary)] transition-colors"
-          >
-            Início
+        <p className="header-description">Sarau, formação<br />e território.</p>
+        <button
+          ref={menuToggleRef}
+          type="button"
+          aria-expanded={menuOpen}
+          aria-controls="mobile-navigation"
+          aria-label={menuOpen ? 'Fechar navegação' : 'Abrir navegação'}
+          onClick={() => setMenuOpen((open) => !open)}
+          className="menu-toggle"
+        >
+          {menuOpen ? 'Fechar' : 'Menu'}
+        </button>
+      </div>
+      <nav aria-label="Navegação principal" className="main-navigation">
+        {navItems.map((item, index) => (
+          <Link key={item.href} href={item.href} className={index === 0 ? '' : 'nav-secondary'}>
+            <span aria-hidden="true" className="nav-number">0{index + 1}</span>
+            <span>{item.label}</span>
           </Link>
-          <Link
-            href="/agenda"
-            className="hover:text-[var(--brand-secondary)] transition-colors"
-          >
-            Agenda
-          </Link>
-          <Link
-            href="/faca-parte"
-            className="hover:text-[var(--brand-secondary)] transition-colors"
-          >
-            Faça Parte
-          </Link>
-          <Link
-            href="/privacidade"
-            className="hover:text-[var(--brand-secondary)] transition-colors text-stone-400"
-          >
-            Privacidade
-          </Link>
-        </nav>
-
-        {/* Actions Desktop */}
-        <div className="hidden md:flex items-center gap-3">
-          <a
-            href="https://wa.me/5511999999999?text=Ol%C3%A1!%20Vim%20pelo%20site%20do%20Manifesto%20da%20Sul"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-800/80 hover:bg-emerald-700 text-emerald-100 border border-emerald-600 transition-colors"
-            aria-label="Fale conosco no WhatsApp"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            WhatsApp
-          </a>
-          <Link
-            href="/faca-parte"
-            className="px-4 py-1.5 rounded-md text-xs font-semibold bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white shadow-sm transition-colors"
-          >
-            Faça Parte
-          </Link>
-        </div>
-
-        {/* Mobile quick actions & toggle */}
-        <div className="flex items-center gap-2 md:hidden">
-          <a
-            href="https://wa.me/5511999999999?text=Ol%C3%A1!%20Vim%20pelo%20site%20do%20Manifesto%20da%20Sul"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-800 text-emerald-100 border border-emerald-600"
-            aria-label="WhatsApp direto"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            Whats
-          </a>
-          <button
-            type="button"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 rounded-md text-stone-300 hover:text-white hover:bg-[var(--brand-dark-surface)] focus:outline-none"
-            aria-expanded={isMobileMenuOpen}
-            aria-label="Abrir menu de navegação"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              {isMobileMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
+        ))}
+        <Link href="/faca-parte" onClick={() => setMenuOpen(false)} className="nav-action">
+          <span aria-hidden="true" className="nav-number">05</span>
+          <span>Faça parte</span> <span aria-hidden="true">→</span>
+        </Link>
+      </nav>
+      <div
+        ref={mobileNavigationRef}
+        id="mobile-navigation"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navegação móvel"
+        hidden={!menuOpen}
+        className="mobile-navigation-overlay"
+      >
+        <div className="mobile-navigation-heading">
+          <span className="font-logo">Manifesto da Sul</span>
+          <button ref={menuCloseRef} type="button" onClick={closeMenu} className="menu-toggle">
+            Fechar <span aria-hidden="true">×</span>
           </button>
         </div>
-      </div>
-
-      {/* Mobile Drawer */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-[var(--brand-dark-surface)] border-b border-[var(--brand-dark-border)] px-4 pt-3 pb-5 space-y-3">
-          <Link
-            href="/"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-md text-base font-medium text-stone-200 hover:bg-[var(--brand-dark)] hover:text-white"
-          >
-            Início
-          </Link>
-          <Link
-            href="/agenda"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-md text-base font-medium text-stone-200 hover:bg-[var(--brand-dark)] hover:text-white"
-          >
-            Agenda de Eventos
-          </Link>
-          <Link
-            href="/faca-parte"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-md text-base font-medium text-stone-200 hover:bg-[var(--brand-dark)] hover:text-white"
-          >
-            Faça Parte
-          </Link>
-          <Link
-            href="/privacidade"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-md text-base font-medium text-stone-400 hover:bg-[var(--brand-dark)] hover:text-white"
-          >
-            Política de Privacidade
-          </Link>
-          <div className="pt-2">
-            <Link
-              href="/faca-parte"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full block text-center py-2.5 px-4 rounded-md font-semibold text-sm bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-primary-hover)] transition-colors"
-            >
-              Quero Participar do Coletivo
+        <nav aria-label="Navegação móvel" className="mobile-navigation">
+          {navItems.map((item, index) => (
+            <Link key={item.href} href={item.href} onClick={closeMenu}>
+              <span aria-hidden="true" className="nav-number">0{index + 1}</span>
+              <span>{item.label}</span>
             </Link>
-          </div>
-        </div>
-      )}
+          ))}
+          <Link href="/faca-parte" onClick={closeMenu} className="mobile-action">
+            <span aria-hidden="true" className="nav-number">05</span>
+            <span>Faça parte <span aria-hidden="true">→</span></span>
+          </Link>
+        </nav>
+      </div>
     </header>
   )
 }
